@@ -8,7 +8,7 @@ const mainRoute = require('./Routes/main');
 const app = express();
 const port = process.env.PORT || 5000;
 const corsOption = {
-  origin: ['http://localhost:3000'],
+  origin: ['http://localhost:3000', 'https://sigmadelivery-frontend.pages.dev'],
 };
 
 app.use(bodyParser.urlencoded({ extended: false }));
