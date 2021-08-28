@@ -3,6 +3,7 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 
 const mainRoute = require('./Routes/main');
+const loginRoute = require('./Routes/admin');
 
 
 const app = express();
@@ -16,6 +17,7 @@ app.use(bodyParser.json());
 app.use(cors(corsOption));
 
 app.use('/track', mainRoute);
+app.use('/admin', loginRoute);
 
 app.listen(port, () => {
   console.log(`Server Started on port ${port}`);
