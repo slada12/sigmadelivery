@@ -127,6 +127,8 @@ route.post('/add', auth, async(req, res) => {
       pickupDate: req.body.pickupDate,
       pickupTime: req.body.pickupTime,
       comment: req.body.comment,
+      currDest: req.body.currDest,
+      wght: req.body.wght,
     };
   
     const stringifyData = JSON.stringify(data)
@@ -211,6 +213,8 @@ route.post('/edit', auth, (req, res) => {
       pickupDate: req.body.pickupDate,
       pickupTime: req.body.pickupTime,
       comment: req.body.comment,
+      currDest: req.body.currDest,
+      wght: req.body.wght,
     };
   
     const stringifyData = JSON.stringify(data);
