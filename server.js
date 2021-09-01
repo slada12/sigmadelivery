@@ -2,9 +2,30 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const cron = require('node-cron');
+const mongoose = require('mongoose');
+require('dotenv').config();
 
 const mainRoute = require('./Routes/main');
 const loginRoute = require('./Routes/admin');
+
+(async function () {
+  try {
+    mongoose.connect(process.env.dbConnection, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+      useFindAndModify: false,
+    }, () => {
+      console.log('The Database is ready to establish connection!!');
+    });
+  } catch (error) {
+    console.log(error);
+    console.log('The Database did not Connect!!!');
+  }
+
+  await mongoose.connection.once('open', () => {
+    console.log('Connection Succesfully Established Connection');
+  });
+}());
 
 
 const app = express();

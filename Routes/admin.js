@@ -1,6 +1,7 @@
 const route = require('express').Router();
 const fs = require('fs');
 const { auth } = require('../Middlewares/auth');
+const Track = require('../Model/track');
 
 const { encrypt, decrypt } = require('../Functions/encrypt');
 
@@ -105,7 +106,8 @@ route.post('/add', auth, async(req, res) => {
     const num = Math.floor(Math.random() * 1000000);
 
     const trackNumber = `col-TN-${num}`;
-    const data = {
+
+    const data = new Track({
       trackNumber,
       shipperName: req.body.shipperName,
       shipperEmail: req.body.shipperEmail,
@@ -129,19 +131,21 @@ route.post('/add', auth, async(req, res) => {
       comment: req.body.comment,
       currDest: req.body.currDest,
       wght: req.body.wght,
-    };
-  
-    const stringifyData = JSON.stringify(data)
-  
-    fs.writeFileSync(`${data.trackNumber}.js`, stringifyData, (err) => {
-      if (err) {
-        console.log(err)
-      }
-  
-      console.log('successfully created');
     });
+  
+    // const stringifyData = JSON.stringify(data)
+  
+    // fs.writeFileSync(`${data.trackNumber}.js`, stringifyData, (err) => {
+    //   if (err) {
+    //     console.log(err)
+    //   }
+  
+    //   console.log('successfully created');
+    // });
 
-    console.log(data);
+    // console.log(data);
+
+    data.save();
   
     return res.status(200).json({
       message: `Please copy and keep it save. ${trackNumber}`,
@@ -157,22 +161,21 @@ route.post('/add', auth, async(req, res) => {
 route.post('/id-info', async(req, res) => {
   try {
     const { trackNumber } = req.body;
+    const data = await Track.findOne({ trackNumber });
 
-  try {
-    const data = fs.readFileSync(`${trackNumber}.js`);
+    // const parseData = JSON.parse(data);
+    // console.log(parseData);
 
-    const parseData = JSON.parse(data);
-    console.log(parseData);
+    if (!data) {
+      return res.status(404).json({
+        message: 'Tracking Number Not Found',
+      });
+    };
 
     return res.status(200).json({
-      data: parseData,
+      data,
       message: 'Success',
     });
-  } catch (error) {
-    return res.status(404).json({
-      message: 'Tracking Number Not Found.',
-    });
-  }
   } catch (error) {
     return res.status(500).json({
       message: 'Server Error',
@@ -180,52 +183,56 @@ route.post('/id-info', async(req, res) => {
   }
 });
 
-route.post('/edit', auth, (req, res) => {
+route.post('/edit', auth, async (req, res) => {
   const trackNumber = req.body.trackNumber;
 
-  try {
-    fs.readFileSync(`${trackNumber}.js`);
-  } catch (e) {
+  const trFound = await Track.findOne({ trackNumber });
+
+  if (!trFound) {
     return res.status(404).json({
-      message: "No Tracking Number Found. Please Contact system administrator",
+      message: 'Tracking Number Not Found',
     });
   }
 
   const data = {
-      trackNumber,
-      shipperName: req.body.shipperName,
-      shipperEmail: req.body.shipperEmail,
-      shipperTel: req.body.shipperTel,
-      shipperAdd: req.body.shipperAdd,
-      recieverName: req.body.recieverName,
-      recieverEmail: req.body.recieverEmail,
-      recieverTel: req.body.recieverTel,
-      recieverAdd: req.body.recieverAdd,
-      origin: req.body.origin,
-      dest: req.body.dest,
-      shipStatus: req.body.shipStatus,
-      packageType: req.body.packageType,
-      shipType: req.body.shipType,
-      shipMode: req.body.shipMode,
-      payMode: req.body.payMode,
-      deliveryDate: req.body.deliveryDate,
-      departureTime: req.body.departureTime,
-      pickupDate: req.body.pickupDate,
-      pickupTime: req.body.pickupTime,
-      comment: req.body.comment,
-      currDest: req.body.currDest,
-      wght: req.body.wght,
+    trackNumber,
+    shipperName: req.body.shipperName,
+    shipperEmail: req.body.shipperEmail,
+    shipperTel: req.body.shipperTel,
+    shipperAdd: req.body.shipperAdd,
+    recieverName: req.body.recieverName,
+    recieverEmail: req.body.recieverEmail,
+    recieverTel: req.body.recieverTel,
+    recieverAdd: req.body.recieverAdd,
+    origin: req.body.origin,
+    dest: req.body.dest,
+    shipStatus: req.body.shipStatus,
+    packageType: req.body.packageType,
+    shipType: req.body.shipType,
+    shipMode: req.body.shipMode,
+    payMode: req.body.payMode,
+    deliveryDate: req.body.deliveryDate,
+    departureTime: req.body.departureTime,
+    pickupDate: req.body.pickupDate,
+    pickupTime: req.body.pickupTime,
+    comment: req.body.comment,
+    currDest: req.body.currDest,
+    wght: req.body.wght,
     };
+
+    const trackEdit = await Track.findOneAndUpdate({ trackNumber }, data);
+
+    trackEdit.save();
   
-    const stringifyData = JSON.stringify(data);
+    // const stringifyData = JSON.stringify(data);
   
-    try {
-      fs.writeFileSync(`${trackNumber}.js`, stringifyData);
-    } catch (error) {
-      return res.status(400).json({
-        message: 'Could not be updated. Please Try Again',
-      });
-    }
+    // try {
+    //   fs.writeFileSync(`${trackNumber}.js`, stringifyData);
+    // } catch (error) {
+    //   return res.status(400).json({
+    //     message: 'Could not be updated. Please Try Again',
+    //   });
+    // }
   
     return res.status(200).json({
       message: 'Saved Successfully',

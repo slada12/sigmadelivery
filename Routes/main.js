@@ -1,7 +1,7 @@
 const route = require('express').Router();
 const fs = require('fs');
 
-const MainModel = require('../Model/main');
+const MainModel = require('../Model/track');
 
 route.post('/', async (req, res) => {
   try {
