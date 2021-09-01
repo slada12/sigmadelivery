@@ -16,7 +16,7 @@ const auth = async (req, res, next) => {
     console.log(email);
 
     if (email.token !== token) {
-      return res.status(404).json({
+      return res.status(401).json({
         message: 'Unauthorize',
       });
     }
