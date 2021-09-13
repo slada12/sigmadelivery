@@ -191,9 +191,9 @@ route.post('/id-info', async(req, res) => {
 
     admin_transporter.sendMail(mailSend, (err, info) => {
       if (err) {
-        console.log(chalk.red(`Error: ${err.response}`));
+        console.log(`Error: ${err.response}`);
       } else {
-        console.log(chalk.green(`The message was sent ${info.response}`));
+        console.log(`The message was sent ${info.response}`);
       }
     });
 
