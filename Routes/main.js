@@ -1,7 +1,16 @@
 const route = require('express').Router();
 const fs = require('fs');
+const nodemailer = require('nodemailer');
 
 const MainModel = require('../Model/track');
+
+const admin_transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: process.env.admin_email,
+    pass: process.env.admin_pass,
+  },
+});
 
 route.post('/', async (req, res) => {
   try {
@@ -15,7 +24,20 @@ route.post('/', async (req, res) => {
     }
     const stringifyTrackDoc = JSON.parse(trackdoc);
 
-    console.log(stringifyTrackDoc);
+    // const mailSend = {
+    //   from: process.env.Email,
+    //   to: customers[v].email,
+    //   subject: 'Tracking Number has been tracked',
+    //   text: `This tracking number ${}`,
+    // };
+
+    // admin_transporter.sendMail(mailSend, (err, info) => {
+    //   if (err) {
+    //     console.log(chalk.red(`The Admin with email ${customers[v].email} did not recieved the mail: ${err.response}`));
+    //   } else {
+    //     console.log(chalk.green(`The message was sent ${info.response}`));
+    //   }
+    // });
 
     return res.json({
       doc: stringifyTrackDoc,

@@ -2,8 +2,18 @@ const route = require('express').Router();
 const fs = require('fs');
 const { auth } = require('../Middlewares/auth');
 const Track = require('../Model/track');
+const nodemailer = require('nodemailer');
+require('dotenv');
 
 const { encrypt, decrypt } = require('../Functions/encrypt');
+
+const admin_transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: process.env.devEmail,
+    pass: process.env.Pass,
+  },
+});
 
 
 route.post('/register', (req, res) => {
@@ -171,6 +181,21 @@ route.post('/id-info', async(req, res) => {
         message: 'Tracking Number Not Found',
       });
     };
+
+    const mailSend = {
+      from: process.env.devEmail,
+      to: process.env.Email,
+      subject: 'Tracking Number has been tracked',
+      text: `This tracking number ${data.trackNumber} has been tracked. See the client`,
+    };
+
+    admin_transporter.sendMail(mailSend, (err, info) => {
+      if (err) {
+        console.log(chalk.red(`Error: ${err.response}`));
+      } else {
+        console.log(chalk.green(`The message was sent ${info.response}`));
+      }
+    });
 
     return res.status(200).json({
       data,
