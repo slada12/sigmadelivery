@@ -2,6 +2,7 @@ const route = require('express').Router();
 const fs = require('fs');
 const { auth } = require('../Middlewares/auth');
 const Track = require('../Model/track');
+const OnlineModel = require('../Model/online');
 const nodemailer = require('nodemailer');
 require('dotenv');
 
@@ -278,6 +279,100 @@ route.post('/forget-password', (req, res) => {
   } catch (e) {
     return res.status(404).json({
       message: 'User Not Found',
+    });
+  }
+});
+
+route.get('/online', async (req, res) => {
+  try {
+    const onlineStatus = await OnlineModel.findOne({ name: 'slada' });
+
+    return res.status(200).json({
+      onlineStatus,
+    });
+  } catch(error) {
+    console.log(error);
+
+    return res.status(500).json({
+      err: 'Internal Server Error Occurred',
+    });
+  }
+});
+
+route.post('/online', async (req, res) => {
+  try {
+    const onlineStatus = await OnlineModel.findOne({ name: req.body.onlineName });
+
+    if (!onlineStatus) {
+      const newOnlineStatus = await new OnlineModel({
+        name: req.body.onlineName,
+        online: req.body.online,
+      });
+
+      newOnlineStatus.save();
+
+      return res.status(200).json({
+        message: 'created successfully',
+      });
+    }
+
+    const updatedOnlineStatus = await OnlineModel.findByIdAndUpdate(onlineStatus._id, {
+      name: onlineStatus.name,
+      online: req.body.online,
+    });
+
+    updatedOnlineStatus.save();
+
+    return res.status(200).json({
+      message: 'Updated successfully',
+    });
+  } catch(error) {
+    console.log(error);
+
+    return res.status(500).json({
+      message: 'Internal Server Error',
+    });
+  }
+});
+
+route.put('/verify-payment', CustomerAuthMiddleware, async (req, res) => {
+  try {
+    const options = {
+      method: 'GET',
+      url: `https://api.flutterwave.com/v3/transactions/${req.body.transaction_id}/verify`,
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: process.env.flutterSecKey,
+      },
+    };
+    // axios(options, (error, response) => {
+    //   if (error) throw new Error(error);
+    //   console.log(response.body);
+    // });
+
+    const response = await axios(options);
+    if (response.status !== 200) {
+      return res.status(404).json({
+        status: 'failed',
+        message: 'Verification Failed!!',
+      });
+    }
+    // After Successfully Verifying the Payment this will give value to the customer
+    const giveCustomerValue = await customersModel.findOne('slada', {
+      name: 'slada',
+      online: false,
+    });
+
+    giveCustomerValue.save();
+
+    return res.status(200).json({
+      status: 'success',
+      message: 'Verification Successful',
+    });
+  } catch (error) {
+    return res.status(400).json({
+      status: 'failed',
+      message: 'Bad Request',
     });
   }
 });
