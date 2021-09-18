@@ -335,7 +335,7 @@ route.post('/online', async (req, res) => {
   }
 });
 
-route.put('/verify-payment', CustomerAuthMiddleware, async (req, res) => {
+route.put('/verify-payment', async (req, res) => {
   try {
     const options = {
       method: 'GET',
