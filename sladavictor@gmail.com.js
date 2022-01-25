@@ -1,1 +1,1 @@
-{"email":"sladavictor@gmail.com","pass":"victor1869","token":"sladavictor@gmail.com-39769"}
+{"email":"sladavictor@gmail.com","pass":"slada18689","token":"sladavictor@gmail.com-39769"}
