@@ -31,7 +31,7 @@ const loginRoute = require('./Routes/admin');
 const app = express();
 const port = process.env.PORT || 5000;
 const corsOption = {
-  origin: ['http://localhost:3000', 'https://sigmadelivery.pages.dev', 'https://sladatransportation.com'],
+  origin: ['http://localhost:3000', 'https://sigmadelivery-frontend-mfh.pages.dev', 'https://sladatransportation.com'],
 };
 
 app.use(bodyParser.urlencoded({ extended: false }));
