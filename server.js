@@ -1,6 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const cors = require('cors');
+// const cors = require('cors');
 const cron = require('node-cron');
 const mongoose = require('mongoose');
 require('dotenv').config();
@@ -36,7 +36,7 @@ const corsOption = {
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-app.use(cors(corsOption));
+// app.use(cors(corsOption));
 
 app.use('/track', mainRoute);
 app.use('/admin', loginRoute);
