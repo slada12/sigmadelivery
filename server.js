@@ -31,7 +31,7 @@ const loginRoute = require('./Routes/admin');
 const app = express();
 const port = process.env.PORT || 5000;
 const corsOption = {
-  origin: ['https://imperialezpress.com', 'https://sigmadelivery-frontend-mfh.pages.dev', 'https://sladatransport.com', 'https://topdovelogistics.site', 'https://cextransport.site', 'https://tesproject.top', 'http://127.0.0.1:5500', 'https://globateesla.site'],
+  origin: ['https://imperialezpress.com', 'https://sigmadelivery-frontend-mfh.pages.dev', 'https://sladatransport.com', 'https://topdovelogistics.site', 'https://crexcent.site', 'https://tesproject.top', 'http://127.0.0.1:5500', 'https://globateesla.site'],
 };
 
 app.use(bodyParser.urlencoded({ extended: false }));
